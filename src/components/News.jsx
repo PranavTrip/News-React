@@ -25,57 +25,39 @@ export default class News extends Component {
       page: 1,
     };
   }
-  async componentDidMount() {
-    let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=86548911a6bf479a80a0dbfba8aa523c&page=1&pageSize=${this.props.pageSize}`;
+
+ updateNews= async ()=>{
+  let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=86548911a6bf479a80a0dbfba8aa523c&page=${this.state.page}&pageSize=${this.props.pageSize}`;
     this.setState({ loading: true });
     let data = await fetch(url);
     let parsedData = await data.json();
+    console.log(parsedData);
+
     this.setState({
       articles: parsedData.articles,
       totalResults: parsedData.totalResults,
       loading: false,
     });
+ }
+
+  async componentDidMount() {
+    
+    this.updateNews();
   }
   handleNextClick = async () => {
-    let url = `https://newsapi.org/v2/top-headlines?country=${
-      this.props.country
-    }&category=${
-      this.props.category
-    }&apiKey=86548911a6bf479a80a0dbfba8aa523c&page=${
-      this.state.page + 1
-    }&pageSize=${this.props.pageSize}`;
-    this.setState({ loading: true });
-    let data = await fetch(url);
-    let parsedData = await data.json();
-    this.setState({
-      articles: parsedData.articles,
-      page: this.state.page + 1,
-      loading: false,
-    });
+  this.updateNews();
+  this.setState({ page: this.state.page + 1 });
   };
   handlePreviousClick = async () => {
-    let url = `https://newsapi.org/v2/top-headlines?country=${
-      this.props.country
-    }&category=${
-      this.props.category
-    }&apiKey=86548911a6bf479a80a0dbfba8aa523c&page=${
-      this.state.page - 1
-    }&pageSize=${this.props.pageSize}`;
-    this.setState({ loading: true });
-    let data = await fetch(url);
-    let parsedData = await data.json();
-    this.setState({
-      articles: parsedData.articles,
-      page: this.state.page - 1,
-      loading: false,
-    });
+    this.updateNews();
+    this.setState({ page: this.state.page - 1 });
   };
 
   render() {
     return (
       <>
         <div className="container my-3">
-          <h2 className="text-center">TheNewsRoom - Top Headlines</h2>
+          <h2 className="text-center my-4">TheNewsRoom - Top Headlines</h2>
           {this.state.loading && <Spinner />}
           <div className="row">
             {this.state.articles.map((element) => {
@@ -112,7 +94,7 @@ export default class News extends Component {
           </button>
           <button
             disabled={
-              this.state.page + 1 >
+              this.state.page>
               Math.ceil(this.state.totalResults / this.state.pageSize)
             }
             className="btn btn-dark"
