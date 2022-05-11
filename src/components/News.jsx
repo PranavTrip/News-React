@@ -10,17 +10,43 @@ export default class News extends Component {
     this.state = {
       articles: [],
       loading: false,
+      page: 1,
     };
   }
   async componentDidMount() {
     let url =
-      "https://newsapi.org/v2/top-headlines?country=in&apiKey=86548911a6bf479a80a0dbfba8aa523c";
-    //let data = await fetch(url);
+      "https://newsapi.org/v2/top-headlines?country=in&apiKey=86548911a6bf479a80a0dbfba8aa523c&page=1&pageSize=20";
+    let data = await fetch(url);
     let parsedData = await data.json();
     this.setState({
       articles: parsedData.articles,
+      totalResults: parsedData.totalResults
     });
   }
+  handleNextClick = async () => {
+    console.log("Next Clicked");
+    let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=86548911a6bf479a80a0dbfba8aa523c&page=${
+      this.state.page + 1
+    }&pageSize=20`;
+    let data = await fetch(url);
+    let parsedData = await data.json();
+    this.setState({
+      articles: parsedData.articles,
+      page: this.state.page + 1,
+    });
+  };
+  handlePreviousClick = async () => {
+    console.log("Previous Clicked");
+    let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=86548911a6bf479a80a0dbfba8aa523c&page=${
+      this.state.page - 1
+    }&pageSize=20`;
+    let data = await fetch(url);
+    let parsedData = await data.json();
+    this.setState({
+      articles: parsedData.articles,
+      page: this.state.page - 1,
+    });
+  };
 
   render() {
     return (
@@ -29,19 +55,39 @@ export default class News extends Component {
           <h2 className="text-center">NewsMonkey - Top Headlines</h2>
           <div className="row">
             {this.state.articles.map((element) => {
-              let {title,description,urlToImage,url}=element;
+              let { title, description, urlToImage, url } = element;
               return (
                 <div className="col-md-4">
                   <NewsComponent
-                    title={title}
-                    description={description}
-                    urlToImage={urlToImage?urlToImage:this.notFoundImage}
+                    title={title ? title.slice(0, 40)+"..." : "No Title"}
+                    description={
+                      description ? description.slice(0, 70)+"..." : "No Description"
+                    }
+                    urlToImage={urlToImage ? urlToImage : this.notFoundImage}
                     url={url}
                   />
                 </div>
               );
             })}
           </div>
+        </div>
+        <div className="container d-flex justify-content-between align-items-center my-3">
+          <button
+            disabled={this.state.page <= 1}
+            className="btn btn-dark"
+            type="button"
+            onClick={this.handlePreviousClick}
+          >
+           &larr; Previous
+          </button>
+          <button
+            disabled={this.state.page+1>Math.ceil(this.state.totalResults/20)}
+            className="btn btn-dark"
+            type="button"
+            onClick={this.handleNextClick}
+          >
+            Next &rarr;
+          </button>
         </div>
       </>
     );
