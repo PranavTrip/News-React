@@ -1,0 +1,11 @@
+.spinner-container{
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+}
+.spinner-container img{
+    text-align: center !important;
+}
