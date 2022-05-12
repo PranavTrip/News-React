@@ -10,7 +10,7 @@ export default class Spinner extends Component {
           <img
             src={loading1}
             alt="loading"
-            style={{ height: "100px", width: "100px" }}
+           
           />
         </div>
       </>
