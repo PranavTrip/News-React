@@ -1,3 +1,7 @@
+body::-webkit-scrollbar{
+    display: none;
+}
+
 .spinner-container{
     height: 10vh;
     display: flex;
